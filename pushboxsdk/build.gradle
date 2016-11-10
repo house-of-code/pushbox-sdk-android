@@ -1,0 +1,70 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 22
+        versionCode 1
+        versionName "0.1.5"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.google.android.gms:play-services:8.3.0'
+}
+
+group = 'io.houseofcode.pushboxsdk'
+version = '0.1.5'
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+bintray {
+    user = bintray_user
+    key = bintray_key
+    pkg {
+        repo = 'maven'
+        name = 'io.houseofcode.pushboxsdk'
+
+        version {
+            name = '0.1.5'
+            desc = 'With inbox'
+            released  = new Date()
+            vcsTag = '0.1.5'
+        }
+
+        licenses = ['MIT']
+        vcsUrl = 'https://opensource.org/licenses/MIT'
+        websiteUrl = 'https://pushboxsdk.com'
+    }
+    configurations = ['archives']
+}
